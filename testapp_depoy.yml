@@ -1,0 +1,19 @@
+---
+- hosts: test-app1
+  remote_user: devops
+  become: true
+  tasks:
+  - name: create directory
+    file:
+     path: /var/www/html/test-app
+     state: directory
+  - name: download htaccess
+    get_url:
+     url: https://github.com/watchmen-test/webdeploy/test-app
+     dest: /var/www/html/test-app
+    notify: restart httpd
+  handlers:
+  - name: restart httpd
+    service:
+      name: httpd
+      state: restarted
